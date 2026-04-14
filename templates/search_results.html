@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>搜尋結果</title>
+</head>
+<body>
+    <h1>搜尋結果</h1>
+    <p>正在搜尋欄位 <strong>{{ field }}</strong> 為 <strong>"{{ keyword }}"</strong> 的資料：</p>
+    <hr>
+
+    {% if results %}
+        <ul>
+        {% for item in results %}
+            <li>{{ item }}</li>
+        {% endfor %}
+        </ul>
+        <p>共找到 {{ results|length }} 筆資料。</p>
+    {% else %}
+        <p style="color: red;">❌ 找不到符合條件的資料。</p>
+    {% endif %}
+
+    <br>
+    <a href="/search">重新搜尋</a> | <a href="/">回到首頁</a>
+</body>
+</html>

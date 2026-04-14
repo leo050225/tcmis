@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>搜尋資料</title>
+</head>
+<body>
+    <h1>關鍵字搜尋 (Firestore)</h1>
+    <form action="/search" method="post">
+        <label for="field">搜尋欄位：</label>
+        <select name="field" id="field">
+            <option value="mail">Email (mail)</option>
+            <option value="name">姓名 (name)</option>
+            </select>
+        <br><br>
+        <label for="keyword">搜尋關鍵字：</label>
+        <input type="text" name="keyword" id="keyword" placeholder="請輸入完整的關鍵字" required>
+        <br><br>
+        <input type="submit" value="開始搜尋">
+    </form>
+    <br>
+    <a href="/">回到首頁</a>
+</body>
+</html>

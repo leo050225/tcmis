@@ -6,6 +6,7 @@ import os
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 # 判斷是在 Vercel 還是本地
 if os.path.exists('serviceAccountKey.json'):
@@ -33,6 +34,7 @@ def index():
     homepage += "<a href=/math>數學運算</a><br>"
     homepage += "<a href=/about>聿觀簡介網頁</a><br>"
     homepage += "<br><a href=/read>讀取Firestore資料</a><br>"
+    homepage += "<br><a href=/search>關鍵字搜尋資料</a><br>"
     return homepage
 
 @app.route("/mis")
@@ -156,6 +158,27 @@ def read():
     for doc in docs:         
         Result += "文件內容：{}".format(doc.to_dict()) + "<br>"    
     return Result
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    if request.method == "POST":
+        field = request.form.get("field")
+        keyword = request.form.get("keyword")
+        
+        db = firestore.client()
+        collection_ref = db.collection("靜宜資管")
+        
+        # 執行搜尋 (這裡預設搜尋欄位內容要完全一致)
+        docs = collection_ref.where(filter=FieldFilter(field, "==", keyword)).get()
+        
+        results = []
+        for doc in docs:
+            results.append(doc.to_dict())
+            
+        return render_template("search_results.html", results=results, field=field, keyword=keyword)
+    else:
+        # GET 請求時，顯示搜尋表單
+        return render_template("search.html")
 
 
 if __name__ == "__main__":
