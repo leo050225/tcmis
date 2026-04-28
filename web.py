@@ -40,6 +40,7 @@ def index():
     homepage += "<br><a href=/search>搜尋資料</a><br>"
     homepage += "<br><a href=/movie>讀取開眼電影即將上映影片</a><br>"
     homepage += "<br><a href=/searchQ>查詢即將上映電影</a><br>"
+    homepage += "<br><a href=/check_update>檢查開眼電影網頁最後更新時間</a><br>"
 
     return homepage
 
@@ -239,6 +240,42 @@ def searchQ():
         return info
     else:  
         return render_template("input.html")
+    
+@app.route("/check_update")
+def check_update():
+    url = "http://www.atmovies.com.tw/movie/next/"
+    try:
+        # 發送請求
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+        Data = requests.get(url, headers=headers)
+        Data.encoding = "utf-8"
+        sp = BeautifulSoup(Data.text, "html.parser")
+        
+        # 尋找包含更新日期的 div (通常是 class="smaller09")
+        update_div = sp.find("div", class_="smaller09")
+        
+        if update_div:
+            update_text = update_div.text.strip()
+            # 這裡 update_text 會像是 "最後更新日期：2024/05/20"
+        else:
+            update_text = "找不到更新日期資訊"
+            
+    except Exception as e:
+        update_text = f"抓取失敗，錯誤原因：{e}"
+
+    # 建立回傳的網頁內容
+    html = f"""
+    <html>
+        <head><title>網頁更新狀態</title></head>
+        <body>
+            <h1>開眼電影網 更新狀態</h1>
+            <p style="font-size: 20px; color: blue;">{update_text}</p>
+            <hr>
+            <a href="/">回到首頁</a>
+        </body>
+    </html>
+    """
+    return html
 
 
 
