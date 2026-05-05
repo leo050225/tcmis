@@ -11,6 +11,10 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
 
+import sys
+sys.path.append('py')
+from opendata import search_road
+
 # 判斷是在 Vercel 還是本地
 if os.path.exists('serviceAccountKey.json'):
     # 本地環境：讀取檔案
@@ -41,6 +45,7 @@ def index():
     homepage += "<br><a href=/movie>讀取開眼電影即將上映影片</a><br>"
     homepage += "<br><a href=/searchQ>查詢即將上映電影</a><br>"
     homepage += "<br><a href=/check_update>檢查開眼電影網頁最後更新時間</a><br>"
+    homepage += "<br><a href=/road>查詢易肇事路口</a><br>"
 
     return homepage
 
@@ -277,6 +282,16 @@ def check_update():
     """
     return html
 
+@app.route("/road", methods=["GET", "POST"])
+def road():
+    if request.method == "POST":
+        road_name = request.form.get("road_name")
+        result = search_road(road_name)
+        # 將結果格式化為 HTML
+        result_html = result.replace("\n\n", "<br><br>").replace("\n", "<br>")
+        return f"<h1>查詢結果</h1><p>{result_html}</p><br><a href='/road'>重新查詢</a><br><a href='/'>回到首頁</a>"
+    else:
+        return render_template("road.html")
 
 
 
