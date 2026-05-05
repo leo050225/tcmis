@@ -1,5 +1,6 @@
 import requests, json
 
+
 def search_road(road_name):
     url = "https://datacenter.taichung.gov.tw/swagger/OpenData/a1b899c0-511f-4e3d-b22b-814982a97e41"
     Data = requests.get(url, verify=False)
@@ -14,5 +15,4 @@ def search_road(road_name):
 
 # 如果直接執行此腳本，保留原功能
 if __name__ == "__main__":
-    Road = input("請輸入欲查詢的路名：")
-    print(search_road(Road))
+    search_road()
