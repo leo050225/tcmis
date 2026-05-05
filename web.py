@@ -14,6 +14,7 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 import sys
 sys.path.append('py')
 from opendata import search_road
+from weather import get_weather
 
 # 判斷是在 Vercel 還是本地
 if os.path.exists('serviceAccountKey.json'):
@@ -46,6 +47,7 @@ def index():
     homepage += "<br><a href=/searchQ>查詢即將上映電影</a><br>"
     homepage += "<br><a href=/check_update>檢查開眼電影網頁最後更新時間</a><br>"
     homepage += "<br><a href=/road>查詢易肇事路口</a><br>"
+    homepage += "<br><a href=/weather>查詢氣象預報</a><br>"
 
     return homepage
 
@@ -292,6 +294,15 @@ def road():
         return f"<h1>查詢結果</h1><p>{result_html}</p><br><a href='/road'>重新查詢</a><br><a href='/'>回到首頁</a>"
     else:
         return render_template("road.html")
+
+@app.route("/weather", methods=["GET", "POST"])
+def weather():
+    if request.method == "POST":
+        city = request.form.get("city")
+        result = get_weather(city)
+        return f"<h1>氣象預報</h1><p>{result}</p><br><a href='/weather'>重新查詢</a><br><a href='/'>回到首頁</a>"
+    else:
+        return render_template("weather.html")
 
 
 
